@@ -246,11 +246,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- ✅ Calendar Placeholder -->
-    <div id="calendar" class="flex-1 bg-white p-4 rounded-2xl shadow-lg border border-gray-200 animate-slide-up">
-      <h2 class="text-lg font-semibold text-gray-700">Coming Soon...</h2>
-    </div>
+       
 
-  </div>
+        <div id="calendar" class="flex-1 bg-white p-6 rounded-2xl shadow-lg border border-gray-200 animate-slide-up">
+    <a href="calendar.php" 
+        class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition duration-200">
+        Go to Calendar
+    </a>
+    <br><br>
+
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">📄 Released Requests</h2>
+
+    <!-- 🔍 Search Input -->
+    <input type="text" id="searchInput" placeholder="Search by name or document..."
+        class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+
+    <div id="tableContainer">
+        <!-- Table will load here via AJAX -->
+    </div>
+</div>
+
+<script>
+let currentPage = 1;
+
+// Fetch released requests with search + pagination
+function fetchReleasedRequests(query = '', page = 1) {
+    currentPage = page;
+    const formData = new FormData();
+    formData.append('ajax', '1');
+    formData.append('search', query);
+    formData.append('page', page);
+
+    fetch('fetch_released_requests.php', { method: 'POST', body: formData })
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('tableContainer').innerHTML = html;
+        });
+}
+
+// Initial load
+fetchReleasedRequests();
+
+// Live search
+document.getElementById('searchInput').addEventListener('input', function() {
+    fetchReleasedRequests(this.value, 1); // reset to page 1 on search
+});
+</script>
+</div>
+
 </main>
 
 <!-- ✅ Modal -->
