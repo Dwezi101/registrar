@@ -1,61 +1,114 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// ------------------------
+// Database Connection
+// ------------------------
 $host = "localhost";
 $user = "root";
 $pass = "";
 $db   = "db_registrar";
+
 $conn = new mysqli($host, $user, $pass, $db);
 $conn->set_charset('utf8mb4');
 
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// ------------------------
+// Helper Function: Add Working Days
+// ------------------------
 function addWorkingDays($startDate, $days) {
     $currentDate = strtotime($startDate);
     $addedDays = 0;
     while ($addedDays < $days) {
         $currentDate = strtotime('+1 day', $currentDate);
         $dayOfWeek = date('N', $currentDate);
-        if ($dayOfWeek < 6) { // Monday to Friday only
+        if ($dayOfWeek < 6) { // Mon-Fri
             $addedDays++;
         }
     }
     return date('Y-m-d', $currentDate);
 }
 
-// ✅ Handle AJAX Request
+// ------------------------
+// Handle AJAX Request
+// ------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $contact_no = $_POST['contact_no'];
-    $document_type = $_POST['document_type'];
+    header('Content-Type: application/json');
+    // Sanitize inputs
+    $first_name       = $conn->real_escape_string($_POST['first_name'] ?? '');
+    $last_name        = $conn->real_escape_string($_POST['last_name'] ?? '');
+    $contact_no       = $conn->real_escape_string($_POST['contact_no'] ?? '');
+    $course_major     = $conn->real_escape_string($_POST['course_major'] ?? '');
+    $grad_status      = $conn->real_escape_string($_POST['grad_status'] ?? '');
+    
+    // Handle NULL for date_graduated
+    $date_graduated   = !empty($_POST['date_graduated']) ? $_POST['date_graduated'] : null;
+
+    $last_school_year = $conn->real_escape_string($_POST['last_school_year'] ?? '');
+    $student_number   = $conn->real_escape_string($_POST['student_number'] ?? '');
+    $first_request    = $conn->real_escape_string($_POST['first_request'] ?? '');
+
+    // Handle multiple document types
+    $document_types = $_POST['document_type'] ?? [];
+    if (is_array($document_types)) {
+        $document_type_str = implode(", ", array_map([$conn, 'real_escape_string'], $document_types));
+    } else {
+        $document_type_str = $conn->real_escape_string($document_types);
+    }
+
     $request_date = date('Y-m-d');
     $release_date = addWorkingDays($request_date, 15);
 
-    $sql = "INSERT INTO registrar_requests (first_name, last_name, contact_no, document_type, request_date, release_date)
-            VALUES ('$first_name', '$last_name', '$contact_no', '$document_type', '$request_date', '$release_date')";
-    mysqli_query($conn, $sql);
+    // Prepare statement
+    $stmt = $conn->prepare("INSERT INTO registrar_requests 
+        (first_name, last_name, contact_no, course_major, grad_status, date_graduated, last_school_year, student_number, first_request, document_type, request_date, release_date) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-    echo json_encode([
-        'success' => true,
-        'full_name' => "$first_name $last_name",
-        'document' => $document_type,
-        'release_date' => date('F d, Y', strtotime($release_date))
-    ]);
+    // Bind parameters (use "s" for string, "s" also works with null)
+    $stmt->bind_param(
+        "ssssssssssss",
+        $first_name,
+        $last_name,
+        $contact_no,
+        $course_major,
+        $grad_status,
+        $date_graduated,
+        $last_school_year,
+        $student_number,
+        $first_request,
+        $document_type_str,
+        $request_date,
+        $release_date
+    );
+
+    // ✅ Removed send_long_data — not needed for normal fields
+
+    if ($stmt->execute()) {
+        echo json_encode([
+            'success' => true,
+            'full_name' => "$first_name $last_name",
+            'document'  => $document_type_str,
+            'release_date' => date('F d, Y', strtotime($release_date))
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'error' => $stmt->error
+        ]);
+    }
+
+    $stmt->close();
+    $conn->close();
     exit;
 }
-
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $contact_no = $_POST['contact_no'];
-    $document_type = $_POST['document_type'];
-    $request_date = date('Y-m-d');
-    $release_date = addWorkingDays($request_date, 15);
-
-    $sql = "INSERT INTO registrar_requests (first_name, last_name, contact_no, document_type, request_date, release_date)
-            VALUES ('$first_name', '$last_name', '$contact_no', '$document_type', '$request_date', '$release_date')";
-    mysqli_query($conn, $sql);
-}
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -129,11 +182,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				</a>
 			</li>
 			<li class="active">
-				<a href="#">
-					<i class='bx bxs-calendar bx-sm'></i>
-					<span class="text">Calendar</span>
-				</a>
-			</li>
+                <a href="#">
+                    <i class='bx bx-file bx-sm'></i>
+                    <span class="text">Request</span>
+                </a>
+            </li>
 		</ul>
 		<ul class="side-menu bottom">
 			<li>
@@ -203,52 +256,175 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 		<!-- MAIN -->
 <main class="flex justify-center items-start min-h-screen bg-gray-100 py-10">
-  <div class="container mx-auto flex flex-col lg:flex-row gap-10 w-full max-w-6xl px-4">
+  <div class="w-full lg:w-3/4 xl:w-2/3 bg-white rounded-2xl shadow-lg p-6 border border-gray-200 animate-slide-up">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">📄 Add New Request</h2>
+    <form id="requestForm" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-    <!-- ✅ Form Card -->
-    <div class="w-full lg:w-1/3 bg-white rounded-2xl shadow-lg p-6 border border-gray-200 animate-slide-up">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">📄 Add New Request</h2>
-      <form id="requestForm" class="space-y-4">
+      <!-- First Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+        <input type="text" name="first_name" placeholder="Enter first name" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+      </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-          <input type="text" name="first_name" placeholder="Enter first name" required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-        </div>
+      <!-- Last Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+        <input type="text" name="last_name" placeholder="Enter last name" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+      </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-          <input type="text" name="last_name" placeholder="Enter last name" required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-        </div>
+      <!-- Contact No -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Contact No.</label>
+        <input type="text" name="contact_no" placeholder="09xxxxxxxxx" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+      </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Contact No.</label>
-          <input type="text" name="contact_no" placeholder="09xxxxxxxxx" required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-        </div>
+      <!-- Course/Major -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Course/Major</label>
+        <input type="text" name="course_major" placeholder="Enter course or major"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+      </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Document Type</label>
-          <select name="document_type" required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-            <option value="">Select Document</option>
-            <option value="TOR">Transcript of Records (TOR)</option>
-            <option value="COG">Certificate of Grades (COG)</option>
-          </select>
-        </div>
+      <!-- Graduate or Undergraduate -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Graduate or Undergraduate</label>
+        <select name="grad_status"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+          <option value="">Select Status</option>
+          <option value="Grad">Graduate</option>
+          <option value="Undergrad">Undergraduate</option>
+        </select>
+      </div>
 
+      <!-- Date Graduated -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Date Graduated</label>
+        <input type="date" name="date_graduated"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+      </div>
+
+      <!-- Last School Year -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Last School Year</label>
+        <input type="text" name="last_school_year" placeholder="e.g. 2023-2024"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+      </div>
+
+      <!-- Student Number -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Student Number</label>
+        <input type="text" name="student_number" placeholder="Enter student number"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+      </div>
+
+      <!-- First Request -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">First Request</label>
+        <select name="first_request"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+
+      <!-- Document Types (full width) -->
+      <div class="lg:col-span-2">
+  <label class="block text-sm font-medium text-gray-700 mb-1">Document Type(s)</label>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-2">
+    
+    <!-- Regular options -->
+    <div class="flex">
+      <input type="checkbox" name="document_type[]" value="Transcript of Records" class="w-4 h-4 mt-1">
+      <label class="ml-2 text-sm leading-tight">Transcript of Records (TOR)</label>
+    </div>
+
+    <div class="flex">
+      <input type="checkbox" name="document_type[]" value="Transfer Credentials" class="w-4 h-4 mt-1">
+      <label class="ml-2 text-sm leading-tight">Transfer Credentials</label>
+    </div>
+
+    <div class="flex">
+      <input type="checkbox" name="document_type[]" value="Authentication (CTC)" class="w-4 h-4 mt-1">
+      <label class="ml-2 text-sm leading-tight">Authentication (CTC)</label>
+    </div>
+
+    <div class="flex">
+      <input type="checkbox" name="document_type[]" value="Diploma" class="w-4 h-4 mt-1">
+      <label class="ml-2 text-sm leading-tight">Diploma</label>
+    </div>
+
+    <div class="flex">
+      <input type="checkbox" name="document_type[]" value="CAV" class="w-4 h-4 mt-1">
+      <label class="ml-2 text-sm leading-tight">CAV</label>
+    </div>
+
+    <div class="flex">
+      <input type="checkbox" name="document_type[]" value="ID" class="w-4 h-4 mt-1">
+      <label class="ml-2 text-sm leading-tight">ID</label>
+    </div>
+
+    <div class="flex">
+      <input type="checkbox" name="document_type[]" value="Certification of Enrollment" class="w-4 h-4 mt-1">
+      <label class="ml-2 text-sm leading-tight">Certification of Enrollment</label>
+    </div>
+
+    <div class="flex">
+      <input type="checkbox" name="document_type[]" value="Copy of Grades" class="w-4 h-4 mt-1">
+      <label class="ml-2 text-sm leading-tight">Copy of Grades</label>
+    </div>
+
+    <div class="flex">
+      <input type="checkbox" name="document_type[]" value="Certification of Graduation" class="w-4 h-4 mt-1">
+      <label class="ml-2 text-sm leading-tight">Certification of Graduation</label>
+    </div>
+
+    <div class="flex">
+      <input type="checkbox" name="document_type[]" value="Certification of Gen. Weighted Average" class="w-4 h-4 mt-1">
+      <label class="ml-2 text-sm leading-tight">Certification of Gen. Weighted Average</label>
+    </div>
+
+    <div class="flex">
+      <input type="checkbox" name="document_type[]" value="Certification of Good Moral Character" class="w-4 h-4 mt-1">
+      <label class="ml-2 text-sm leading-tight">Certification of Good Moral Character</label>
+    </div>
+
+    <!-- Other option -->
+    <div class="flex flex-col">
+      <div class="flex">
+        <input type="checkbox" id="otherDocCheckbox" class="w-4 h-4 mt-1">
+        <label for="otherDocCheckbox" class="ml-2 text-sm leading-tight">Other (Please Specify)</label>
+      </div>
+      <input type="text" id="otherDocInput" name="document_type[]" placeholder="Specify other document"
+        class="mt-1 px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none hidden text-sm">
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const otherCheckbox = document.getElementById('otherDocCheckbox');
+  const otherInput = document.getElementById('otherDocInput');
+
+  otherCheckbox.addEventListener('change', () => {
+    otherInput.classList.toggle('hidden', !otherCheckbox.checked);
+  });
+</script>
+
+<div class="lg:col-span-2">
         <button type="submit"
           class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition duration-200 shadow-md">
           ➕ Add Request
         </button>
-      </form>
-    </div>
+      </div>
 
-    <!-- ✅ Calendar Placeholder -->
-       
-
-        <div id="calendar" class="flex-1 bg-white p-6 rounded-2xl shadow-lg border border-gray-200 animate-slide-up">
+  </div>
+</div>
+      <!-- Submit Button (full width) -->
+       <div id="calendar" class="flex-1 bg-white p-6 rounded-2xl shadow-lg border border-gray-200 animate-slide-up">
     <a href="calendar.php" 
         class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition duration-200">
         Go to Calendar
@@ -293,8 +469,13 @@ document.getElementById('searchInput').addEventListener('input', function() {
 });
 </script>
 </div>
+      
 
+    </form>
+  </div>
 </main>
+
+
 
 <!-- ✅ Modal -->
   <div id="invoiceModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">

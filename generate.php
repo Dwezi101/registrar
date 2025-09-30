@@ -189,11 +189,11 @@ select.custom-select:focus {
 				</a>
 			</li>
 			<li>
-				<a href="registrar_calendar.php">
-					<i class='bx bxs-calendar bx-sm'></i>
-					<span class="text">Calendar</span>
-				</a>
-			</li>
+                <a href="registrar_calendar.php">
+                    <i class='bx bx-file bx-sm'></i>
+                    <span class="text">Request</span>
+                </a>
+            </li>
 		</ul>
 		<ul class="side-menu bottom">
 			<li>
