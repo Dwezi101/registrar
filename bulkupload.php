@@ -187,9 +187,9 @@ if (isset($_POST['upload'], $_POST['academic_year'], $_POST['semester'])) {
 				</a>
 			</li>
 			<li>
-				<a href="#">
-					<i class='bx bxs-group bx-sm' ></i>
-					<span class="text">Next version</span>
+				<a href="registrar_calendar.php">
+					<i class='bx bxs-calendar bx-sm'></i>
+					<span class="text">Calendar</span>
 				</a>
 			</li>
 		</ul>

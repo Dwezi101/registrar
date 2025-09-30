@@ -165,7 +165,7 @@ select.custom-select:focus {
 		</a>
 		<ul class="side-menu top">
 			<li>
-				<a href="#">
+				<a href="registrar_dashboard.php">
 					<i class='bx bxs-dashboard bx-sm' ></i>
 					<span class="text">Dashboard</span>
 				</a>
@@ -189,9 +189,9 @@ select.custom-select:focus {
 				</a>
 			</li>
 			<li>
-				<a href="#">
-					<i class='bx bxs-group bx-sm' ></i>
-					<span class="text">Next version</span>
+				<a href="registrar_calendar.php">
+					<i class='bx bxs-calendar bx-sm'></i>
+					<span class="text">Calendar</span>
 				</a>
 			</li>
 		</ul>

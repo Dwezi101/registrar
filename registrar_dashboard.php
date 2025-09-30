@@ -187,9 +187,9 @@ $secondSem = json_encode($secondSem);
 				</a>
 			</li>
 			<li>
-				<a href="#">
-					<i class='bx bxs-group bx-sm' ></i>
-					<span class="text">Next version</span>
+				<a href="registrar_calendar.php">
+					<i class='bx bxs-calendar bx-sm'></i>
+					<span class="text">Calendar</span>
 				</a>
 			</li>
 		</ul>
@@ -277,7 +277,7 @@ $secondSem = json_encode($secondSem);
 					</ul>
 				</div>
 				<a href="javascript:void(0)" class="btn-download" onclick="openModal()">
-					<span class="text">V1.0 Released</span>
+					<span class="text">V1.1 Released</span>
 				</a>
 			</div>
 
@@ -412,9 +412,9 @@ const studentsChart = new Chart(ctx, {
 		<div id="downloadModal" class="modal">
 		<div class="modal-content">
 			<span class="close" onclick="closeModal()">&times;</span>
-			<h2>🚀 V1.0</h2>
-			<p>Version <strong>1.0</strong> has been released.  
-			Download now and enjoy the latest features.</p>
+			<h2>🚀 V1.1</h2>
+			<p>Version <strong>1.1</strong> has been released.  
+			V1.1 Enjoy the latest features, including the new <strong>Registrar Requests Calendar</strong> — a modern interactive calendar where you can view, track, and manage document requests such as TOR and COG by their release dates, with color-coded status indicators (🟡 Pending, 🟢 Released).</p>
 		</div>
 		</div>
 
