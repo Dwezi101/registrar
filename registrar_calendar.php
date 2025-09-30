@@ -345,27 +345,112 @@ document.getElementById('searchInput').addEventListener('input', function() {
 
   function downloadPDF() {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const name = document.getElementById('modalName').textContent;
-    const documentType = document.getElementById('modalDoc').textContent;
-    const releaseDate = document.getElementById('modalDate').textContent;
 
-    doc.setFontSize(16);
-    doc.text("Registrar Request Invoice", 20, 20);
-    doc.setFontSize(12);
-    doc.text(`Name: ${name}`, 20, 40);
-    doc.text(`Document: ${documentType}`, 20, 50);
-    doc.text(`Release Date: ${releaseDate}`, 20, 60);
+    // Half-letter size: 5.5 x 8.5 inches in points
+    const pageWidth = 396; // 5.5 inches
+    const pageHeight = 612; // 8.5 inches
 
-    // Capture QR from canvas
-    const qrCanvas = document.querySelector('#qrcode canvas');
-    if (qrCanvas) {
-      const imgData = qrCanvas.toDataURL("image/png");
-      doc.addImage(imgData, "PNG", 130, 40, 50, 50);
+    const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "pt",
+        format: [pageWidth, pageHeight]
+    });
+
+    const name = document.getElementById('modalName').textContent || "Julius Dador";
+    const documentType = document.getElementById('modalDoc').textContent || "TOR";
+    const releaseDate = document.getElementById('modalDate').textContent || "October 21, 2025";
+
+    const marginX = 20;
+    const marginTop = 40;
+
+    // -------------------
+    // Header: Logo + College Name
+    // -------------------
+    const logoImg = new Image();
+    logoImg.src = 'img/logo.png';
+    logoImg.onload = function() {
+        const logoWidth = 60;
+        const logoHeight = 60;
+        doc.addImage(logoImg, "PNG", marginX, marginTop - 10, logoWidth, logoHeight);
+
+        // College Name
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0, 40, 80); // modern dark blue
+        doc.text("Concepcion Holy Cross College, Inc.", marginX + logoWidth + 10, marginTop + 20);
+
+        // -------------------
+        // Title
+        // -------------------
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0);
+        doc.text("Student Document Request Invoice", pageWidth / 2, marginTop + 60, { align: "center" });
+
+        // Student Info
+        const infoY = marginTop + 85;
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Name: ${name}`, marginX, infoY);
+        doc.text(`Document: ${documentType}`, marginX, infoY + 20);
+        doc.text(`Release Date: ${releaseDate}`, marginX, infoY + 40);
+
+        // Optional Note
+        const noteY = infoY + 70;
+        doc.setFontSize(11);
+        doc.setTextColor(80);
+        const noteText = "This document confirms your request for official student records. Please present this invoice when claiming your requested document. Keep this invoice for your reference, as it serves as proof of submission and expected release date. For inquiries, contact the Office of the Registrar.";
+
+        const maxWidth = pageWidth - 2 * marginX; // width of text area
+        const lines = doc.splitTextToSize(noteText, maxWidth);
+
+        // Add text with justification
+        doc.setFontSize(11);
+        doc.setTextColor(80);
+        doc.text(lines, marginX, noteY, { align: 'justify', maxWidth: maxWidth });
+
+        // -------------------
+        // QR code bottom-right
+        // -------------------
+        const qrCanvas = document.querySelector('#qrcode canvas');
+        if (qrCanvas) {
+            const qrData = qrCanvas.toDataURL("image/png");
+            doc.addImage(qrData, "PNG", pageWidth - marginX - 80, pageHeight - 100, 80, 80);
+        }
+
+        // -------------------
+        // Signature bottom-left
+        // -------------------
+        const signatureImg = new Image();
+        signatureImg.src = 'img/sample.png';
+        signatureImg.onload = function() {
+            const sigWidth = 80;
+            const sigHeight = 40;
+            const sigY = pageHeight - 100; // signature above footer
+            doc.addImage(signatureImg, "PNG", marginX, sigY, sigWidth, sigHeight);
+
+            // Name and title under signature
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(0);
+            doc.text("Julius Dador", marginX + sigWidth / 2, sigY + sigHeight + 12, { align: "center" });
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.text("Registrar", marginX + sigWidth / 2, sigY + sigHeight + 26, { align: "center" });
+
+            // -------------------
+            // Footer
+            // -------------------
+            doc.setFontSize(9);
+            doc.setTextColor(150);
+            doc.text("OFFICE OF THE REGISTRAR", pageWidth / 2, pageHeight - 20, { align: "center" });
+
+            // Save PDF
+            doc.save(`Request_${name}.pdf`);
+        }
     }
+}
 
-    doc.save(`Request_${name}.pdf`);
-  }
   </script>
 
 
