@@ -337,60 +337,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
   <div class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-2">
     
     <!-- Regular options -->
-    <div class="flex">
-      <input type="checkbox" name="document_type[]" value="Transcript of Records" class="w-4 h-4 mt-1">
-      <label class="ml-2 text-sm leading-tight">Transcript of Records (TOR)</label>
-    </div>
+    <div class="flex items-center">
+  <input type="checkbox" name="document_type[]" value="Transcript of Records" class="w-4 h-4 mt-1">
+  <label class="ml-2 text-sm leading-tight">
+    Transcript of Records (TOR) - <span class="font-semibold">₱700</span>
+  </label>
+</div>
 
-    <div class="flex">
-      <input type="checkbox" name="document_type[]" value="Transfer Credentials" class="w-4 h-4 mt-1">
-      <label class="ml-2 text-sm leading-tight">Transfer Credentials</label>
-    </div>
+<div class="flex items-center">
+  <input type="checkbox" name="document_type[]" value="Transfer Credentials" class="w-4 h-4 mt-1">
+  <label class="ml-2 text-sm leading-tight">
+    Transfer Credentials - <span class="font-semibold">₱1200</span>
+  </label>
+</div>
 
-    <div class="flex">
-      <input type="checkbox" name="document_type[]" value="Authentication (CTC)" class="w-4 h-4 mt-1">
-      <label class="ml-2 text-sm leading-tight">Authentication (CTC)</label>
-    </div>
+<div class="flex items-center">
+  <input type="checkbox" name="document_type[]" value="Authentication (CTC)" class="w-4 h-4 mt-1">
+  <label class="ml-2 text-sm leading-tight">
+    Authentication (CTC) - <span class="font-semibold">₱200</span>
+  </label>
+</div>
 
-    <div class="flex">
-      <input type="checkbox" name="document_type[]" value="Diploma" class="w-4 h-4 mt-1">
-      <label class="ml-2 text-sm leading-tight">Diploma</label>
-    </div>
+<div class="flex items-center">
+  <input type="checkbox" name="document_type[]" value="Diploma" class="w-4 h-4 mt-1">
+  <label class="ml-2 text-sm leading-tight">
+    Diploma - <span class="font-semibold">₱500</span>
+  </label>
+</div>
 
-    <div class="flex">
-      <input type="checkbox" name="document_type[]" value="CAV" class="w-4 h-4 mt-1">
-      <label class="ml-2 text-sm leading-tight">CAV</label>
-    </div>
+<div class="flex items-center">
+  <input type="checkbox" name="document_type[]" value="CAV" class="w-4 h-4 mt-1">
+  <label class="ml-2 text-sm leading-tight">
+    CAV - <span class="font-semibold">₱1200</span>
+  </label>
+</div>
 
-    <div class="flex">
-      <input type="checkbox" name="document_type[]" value="ID" class="w-4 h-4 mt-1">
-      <label class="ml-2 text-sm leading-tight">ID</label>
-    </div>
+<div class="flex items-center">
+  <input type="checkbox" name="document_type[]" value="Certification of Enrollment" class="w-4 h-4 mt-1">
+  <label class="ml-2 text-sm leading-tight">
+    Certification of Enrollment - <span class="font-semibold">₱200</span>
+  </label>
+</div>
 
-    <div class="flex">
-      <input type="checkbox" name="document_type[]" value="Certification of Enrollment" class="w-4 h-4 mt-1">
-      <label class="ml-2 text-sm leading-tight">Certification of Enrollment</label>
-    </div>
+<div class="flex items-center">
+  <input type="checkbox" name="document_type[]" value="Copy of Grades" class="w-4 h-4 mt-1">
+  <label class="ml-2 text-sm leading-tight">
+    Copy of Grades - <span class="font-semibold">₱200</span>
+  </label>
+</div>
 
-    <div class="flex">
-      <input type="checkbox" name="document_type[]" value="Copy of Grades" class="w-4 h-4 mt-1">
-      <label class="ml-2 text-sm leading-tight">Copy of Grades</label>
-    </div>
+<div class="flex items-center">
+  <input type="checkbox" name="document_type[]" value="Certification of Graduation" class="w-4 h-4 mt-1">
+  <label class="ml-2 text-sm leading-tight">
+    Certification of Graduation
+  </label>
+</div>
 
-    <div class="flex">
-      <input type="checkbox" name="document_type[]" value="Certification of Graduation" class="w-4 h-4 mt-1">
-      <label class="ml-2 text-sm leading-tight">Certification of Graduation</label>
-    </div>
+<div class="flex items-center">
+  <input type="checkbox" name="document_type[]" value="Certification of Gen. Weighted Average" class="w-4 h-4 mt-1">
+  <label class="ml-2 text-sm leading-tight">
+    Certification of Gen. Weighted Average - <span class="font-semibold">₱200</span>
+  </label>
+</div>
 
-    <div class="flex">
-      <input type="checkbox" name="document_type[]" value="Certification of Gen. Weighted Average" class="w-4 h-4 mt-1">
-      <label class="ml-2 text-sm leading-tight">Certification of Gen. Weighted Average</label>
-    </div>
+<div class="flex items-center">
+  <input type="checkbox" name="document_type[]" value="Certification of Good Moral Character" class="w-4 h-4 mt-1">
+  <label class="ml-2 text-sm leading-tight">
+    Certification of Good Moral Character - <span class="font-semibold">₱200</span>
+  </label>
+</div>
 
-    <div class="flex">
-      <input type="checkbox" name="document_type[]" value="Certification of Good Moral Character" class="w-4 h-4 mt-1">
-      <label class="ml-2 text-sm leading-tight">Certification of Good Moral Character</label>
-    </div>
 
     <!-- Other option -->
     <div class="flex flex-col">
@@ -496,143 +512,224 @@ document.getElementById('searchInput').addEventListener('input', function() {
 
 <script>
   document.getElementById('requestForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    formData.append('ajax', '1');
+  e.preventDefault();
+  const formData = new FormData(this);
+  formData.append('ajax', '1');
 
-    fetch('', { method: 'POST', body: formData })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          document.getElementById('modalName').textContent = data.full_name;
-          document.getElementById('modalDoc').textContent = data.document;
-          document.getElementById('modalDate').textContent = data.release_date;
+  fetch('', { method: 'POST', body: formData })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        const selectedDocs = data.document.split(", ").map(d => d.trim());
+        let total = 0;
+        let breakdownHTML = `
+          <table class="w-full text-sm">
+            <thead>
+              <tr>
+                <th class="text-left">Document</th>
+                <th class="text-right">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
 
-          // Generate QR Code
-          const qrContent = `Name: ${data.full_name}\nDocument: ${data.document}\nRelease Date: ${data.release_date}`;
-          const qrContainer = document.getElementById('qrcode');
-          qrContainer.innerHTML = '';
-          new QRCode(qrContainer, { text: qrContent, width: 100, height: 100 });
+        selectedDocs.forEach(doc => {
+          const price = documentPrices[doc] ?? 0;
+          total += price;
+          breakdownHTML += `
+              <tr>
+                <td>${doc}</td>
+                <td class="text-right">₱${price}</td>
+              </tr>
+          `;
+        });
 
-          document.getElementById('invoiceModal').classList.remove('hidden');
-          this.reset();
-        }
-      });
-  });
+        breakdownHTML += `
+            </tbody>
+            <tfoot class="font-semibold border-t">
+              <tr>
+                <td>Total</td>
+                <td class="text-right">₱${total}</td>
+              </tr>
+            </tfoot>
+          </table>
+        `;
+
+        document.getElementById('modalName').textContent = data.full_name;
+        document.getElementById('modalDoc').innerHTML = breakdownHTML;
+        document.getElementById('modalDate').textContent = data.release_date;
+
+        // ✅ FIXED: define qrContainer before use
+        const qrContainer = document.getElementById('qrcode');
+        qrContainer.innerHTML = ''; // clear previous QR if any
+
+        // Create a short reference code
+        const refCode = `REQ-${Date.now()}`;
+
+        // Short QR content to prevent overflow
+        const qrContent = `Ref: ${refCode}`;
+
+        // ✅ Generate QR
+        new QRCode(qrContainer, {
+          text: qrContent,
+          width: 120,
+          height: 120,
+          correctLevel: QRCode.CorrectLevel.L
+        });
+
+        // Store data for printing/downloading
+        window.invoiceData = { name: data.full_name, docs: selectedDocs, total, release: data.release_date };
+
+        // Show modal
+        document.getElementById('invoiceModal').classList.remove('hidden');
+
+        this.reset();
+      }
+    });
+});
+
 
   function closeModal() {
     document.getElementById('invoiceModal').classList.add('hidden');
   }
 
   function downloadPDF() {
-    const { jsPDF } = window.jspdf;
+  const { jsPDF } = window.jspdf;
 
-    // Half-letter size: 5.5 x 8.5 inches in points
-    const pageWidth = 396; // 5.5 inches
-    const pageHeight = 612; // 8.5 inches
+  const pageWidth = 396; // 5.5in
+  const pageHeight = 612; // 8.5in
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "pt",
+    format: [pageWidth, pageHeight]
+  });
 
-    const doc = new jsPDF({
-        orientation: "portrait",
-        unit: "pt",
-        format: [pageWidth, pageHeight]
-    });
+  const name = document.getElementById('modalName').textContent || "John Dela Cruz";
+  const releaseDate = document.getElementById('modalDate').textContent || "October 21, 2025";
 
-    const name = document.getElementById('modalName').textContent || "Julius Dador";
-    const documentType = document.getElementById('modalDoc').textContent || "TOR";
-    const releaseDate = document.getElementById('modalDate').textContent || "October 21, 2025";
+  // We’ll use the stored invoiceData from your fetch
+  const invoice = window.invoiceData || { docs: [], total: 0 };
 
-    const marginX = 20;
-    const marginTop = 40;
+  const marginX = 20;
+  const marginTop = 40;
 
-    // -------------------
-    // Header: Logo + College Name
-    // -------------------
-    const logoImg = new Image();
-    logoImg.src = 'img/logo.png';
-    logoImg.onload = function() {
-        const logoWidth = 60;
-        const logoHeight = 60;
-        doc.addImage(logoImg, "PNG", marginX, marginTop - 10, logoWidth, logoHeight);
+  const logoImg = new Image();
+  logoImg.src = 'img/logo.png';
+  logoImg.onload = function() {
+    const logoW = 60, logoH = 60;
+    doc.addImage(logoImg, "PNG", marginX, marginTop - 10, logoW, logoH);
 
-        // College Name
-        doc.setFontSize(16);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(0, 40, 80); // modern dark blue
-        doc.text("Concepcion Holy Cross College, Inc.", marginX + logoWidth + 10, marginTop + 20);
+    // Header
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 40, 80);
+    doc.text("Concepcion Holy Cross College, Inc.", marginX + logoW + 10, marginTop + 20);
 
-        // -------------------
-        // Title
-        // -------------------
-        doc.setFontSize(14);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(0);
-        doc.text("Student Document Request Invoice", pageWidth / 2, marginTop + 60, { align: "center" });
+    doc.setFontSize(14);
+    doc.setTextColor(0);
+    doc.text("Student Document Request Invoice", pageWidth / 2, marginTop + 60, { align: "center" });
 
-        // Student Info
-        const infoY = marginTop + 85;
-        doc.setFontSize(12);
-        doc.setFont("helvetica", "normal");
-        doc.text(`Name: ${name}`, marginX, infoY);
-        doc.text(`Document: ${documentType}`, marginX, infoY + 20);
-        doc.text(`Release Date: ${releaseDate}`, marginX, infoY + 40);
+    // Student Info
+    let y = marginTop + 85;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Name: ${name}`, marginX, y);
+    y += 20;
+    doc.text(`Release Date: ${releaseDate}`, marginX, y);
+    y += 30;
 
-        // Optional Note
-        const noteY = infoY + 70;
-        doc.setFontSize(11);
-        doc.setTextColor(80);
-        const noteText = "This document confirms your request for official student records. Please present this invoice when claiming your requested document. Keep this invoice for your reference, as it serves as proof of submission and expected release date. For inquiries, contact the Office of the Registrar.";
+    // Table header
+    doc.setFont("helvetica", "bold");
+    doc.text("Document", marginX, y);
+    doc.text("Price", pageWidth - marginX - 60, y);
+    y += 10;
+    doc.setLineWidth(0.5);
+    doc.line(marginX, y, pageWidth - marginX, y);
+    y += 15;
 
-        const maxWidth = pageWidth - 2 * marginX; // width of text area
-        const lines = doc.splitTextToSize(noteText, maxWidth);
+   // ✅ Table content
+  doc.setFont("helvetica", "normal");
+  invoice.docs.forEach(item => {
+    if (!item || item.trim() === "") return; // skip empty
+    const price = documentPrices[item] ?? 0;
+    doc.text(item, marginX, y);
+    doc.text(`Php ${price}`, pageWidth - marginX - 60, y);
+    y += 18;
+  });
 
-        // Add text with justification
-        doc.setFontSize(11);
-        doc.setTextColor(80);
-        doc.text(lines, marginX, noteY, { align: 'justify', maxWidth: maxWidth });
+  // ✅ Total line
+  y += 5;
+  doc.line(marginX, y, pageWidth - marginX, y);
+  y += 15;
+  doc.setFont("helvetica", "bold");
+  doc.text("Total", marginX, y);
+  doc.text(`Php ${invoice.total}`, pageWidth - marginX - 60, y);
 
-        // -------------------
-        // QR code bottom-right
-        // -------------------
-        const qrCanvas = document.querySelector('#qrcode canvas');
-        if (qrCanvas) {
-            const qrData = qrCanvas.toDataURL("image/png");
-            doc.addImage(qrData, "PNG", pageWidth - marginX - 80, pageHeight - 100, 80, 80);
-        }
+  // ✅ Add spacing before the note
+  y += 25; // 👈 this adds space before next text block
 
-        // -------------------
-        // Signature bottom-left
-        // -------------------
-        const signatureImg = new Image();
-        signatureImg.src = 'img/sample.png';
-        signatureImg.onload = function() {
-            const sigWidth = 80;
-            const sigHeight = 40;
-            const sigY = pageHeight - 100; // signature above footer
-            doc.addImage(signatureImg, "PNG", marginX, sigY, sigWidth, sigHeight);
+  // ✅ Note section
+  const noteText =
+    "Please present this invoice when claiming your requested document. Keep this as proof of your request.";
+  const lines = doc.splitTextToSize(noteText, pageWidth - 2 * marginX);
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "normal");
+  doc.text(lines, marginX, y);
 
-            // Name and title under signature
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "bold");
-            doc.setTextColor(0);
-            doc.text("Julius Dador", marginX + sigWidth / 2, sigY + sigHeight + 12, { align: "center" });
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "normal");
-            doc.text("Registrar", marginX + sigWidth / 2, sigY + sigHeight + 26, { align: "center" });
 
-            // -------------------
-            // Footer
-            // -------------------
-            doc.setFontSize(9);
-            doc.setTextColor(150);
-            doc.text("OFFICE OF THE REGISTRAR", pageWidth / 2, pageHeight - 20, { align: "center" });
-
-            // Save PDF
-            doc.save(`Request_${name}.pdf`);
-        }
+    // QR Code (optional)
+    const qrCanvas = document.querySelector("#qrcode canvas");
+    if (qrCanvas) {
+      const qrData = qrCanvas.toDataURL("image/png");
+      doc.addImage(qrData, "PNG", pageWidth - marginX - 80, pageHeight - 100, 80, 80);
     }
+
+    // Signature
+    const signatureImg = new Image();
+    signatureImg.src = "img/sample.png";
+    signatureImg.onload = function() {
+      const sigW = 80,
+        sigH = 40,
+        sigY = pageHeight - 100;
+      doc.addImage(signatureImg, "PNG", marginX, sigY, sigW, sigH);
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Julius Dador", marginX + sigW / 2, sigY + sigH + 12, { align: "center" });
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text("Registrar", marginX + sigW / 2, sigY + sigH + 26, { align: "center" });
+
+      // Footer
+      doc.setFontSize(9);
+      doc.setTextColor(150);
+      doc.text("OFFICE OF THE REGISTRAR", pageWidth / 2, pageHeight - 20, { align: "center" });
+
+      // Save file
+      const refCode = `REQ-${Date.now()}`;
+      const safeName = name.replace(/\s+/g, "_");
+      doc.save(`${refCode}_${safeName}.pdf`);
+    };
+  };
 }
 
+
   </script>
+
+  <script>
+    const documentPrices = {
+      "Transcript of Records": 700,
+      "Transfer Credentials": 1200,
+      "Authentication (CTC)": 200,
+      "Diploma": 500,
+      "CAV": 1200,
+      "ID": 0,
+      "Certification of Enrollment": 200,
+      "Copy of Grades": 200,
+      "Certification of Graduation": 0,
+      "Certification of Gen. Weighted Average": 200,
+      "Certification of Good Moral Character": 200
+    };
+    </script>
 
 
 </body>
